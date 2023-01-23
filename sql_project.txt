@@ -1,0 +1,49 @@
+/*Query: mediatype for most popular genre  */
+
+SELECT m.MediaTypeId,m.Name MediaType_name,g.Name genre_name,count(g.GenreId) genre_purchases
+FROM MediaType m
+JOIN Track t
+on m.MediaTypeId=t.MediaTypeId
+JOIN Genre g
+on t.GenreId=g.GenreId
+group by 1,2,3
+order by 4 desc;
+
+/*Query: Playlists that most preferred by customers */
+
+select p.PlaylistId,p.Name playlist_name,COUNT(DISTINCT c.CustomerId) as no_customers
+FROM Playlist p
+JOIN PlaylistTrack pt
+on p.PlaylistId=pt.PlaylistId
+JOIN Track t
+on pt.TrackId=t.TrackId
+JOIN InvoiceLine il
+on t.TrackId=il.TrackId
+JOIN Invoice i
+on il.InvoiceId=i.InvoiceId
+JOIN Customer c
+on i.CustomerId=c.CustomerId
+group by 1,2
+order by 3 DESC
+LIMIT 7;
+
+/*Query: artists with highest number of albums */
+
+SELECT a.Name Artists_Names,count(al.AlbumId) no_albums
+from Artist a
+join Album al
+on a.ArtistId=al.ArtistId
+group by 1
+order by 2 desc
+limit 10;
+
+/*Query: Employees achieve highest invoices */
+
+SELECT e.FirstName employee_name,e.Email,e.City city_name,sum(i.total)as invoice
+FROM Employee e
+join Customer c
+on e.EmployeeId=c.SupportRepId
+join Invoice i 
+on c.CustomerId=i.CustomerId
+group by 1,2,3
+ORDER by 4 DESC;
